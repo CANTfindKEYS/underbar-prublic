@@ -126,7 +126,7 @@
           iterations.push([letter, index]);
         });
 
-        expect(iterations).to.eql([['a', 0]['b', 1]['c', 2]]);
+        expect(iterations).to.eql([['a', 0],['b', 1],['c', 2]]);
       });
 
       it('should iterate over arrays and provide access to the original collection', function() {
@@ -153,7 +153,7 @@
           iterations.push(letter);
         });
 
-        expect(iterations).to.not.include([['a']['b']['c']]);
+        expect(iterations).to.not.include([['a'],['b'],['c']]);
       });
 
       it('should iterate over objects and provide access to each value', function() {
@@ -369,7 +369,9 @@
       });
 
       it('should apply a function to every value in an array', function() {
-        var multiplyByTwo = num * 2;
+        var multiplyByTwo = (num) =>{
+          return num * 2
+        }
 
         expect(_.map([1, 2, 3], multiplyByTwo)).to.eql([2, 4, 6]);
       });
