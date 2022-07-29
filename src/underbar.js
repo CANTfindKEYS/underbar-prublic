@@ -118,6 +118,23 @@
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
     let resultArray = [];
+    _.each(array, function(item){
+      if(!resultArray.includes(item)){
+        resultArray.push(item);
+      }
+    })
+  //   if (array.length > 0) {
+  //     resultArray.push(array[0]);
+  //   }
+  //   else{
+  //     resultArray.concat(_.reject(resultArray, function(item) => {
+  //       for (let resultItem of resultArray) {
+  //         if (resultItem !== item) {
+  //           resultArray.push(item)
+  //         }
+  //       }
+  //   }))
+  // }
 
     // if(Array.isArray(array) && array.length > 0){
     //     for(let value of array){
@@ -131,6 +148,7 @@
     //       }
     //     }
     // }
+
 
     return resultArray;
   };
@@ -187,11 +205,30 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    if (Array.isArray(collection)) {
-      for (let item of collection) {
-        iterator(memo, context)
+      let memo = accumulator === undefined ? collection[0] : accumulator
+      if(memo === collection[0]){
+        collection = collection.slice(1)
       }
-    }
+      _.each(collection, function(item){
+        memo = iterator(memo, item);
+      })
+      return memo;
+      // if (Array.isArray(collection)) {
+      //   var memo
+      //   if (accumulator === undefined) {
+      //     memo = collection[0];
+      //     for (let i = 1; i < collection.length; i++) {
+      //       memo = iterator(memo, collection[i], i, collection)
+      //     }
+      //   } else {
+      //     memo = accumulator;
+      //     for (let i = 0; i < collection.length; i++) {
+      //       memo = iterator(memo, collection[i], i, collection)
+      //     }
+      //   }
+      //   return memo;
+      // }
+
   };
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
@@ -207,14 +244,21 @@
 
 
   // Determine whether all of the elements match a truth test.
-  _.every = function(collection, iterator) {
+  _.every = function(collection, iterator = _.identity) {
     // TIP: Try re-using reduce() here.
+    return _.reduce(collection, function(wasFound, item) {
+      return wasFound ? !!iterator(item) : wasFound
+    }, true);
+//[2, 3, 0]
   };
-
+  // {return num % 2 === 0}
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
-  _.some = function(collection, iterator) {
+  _.some = function(collection, iterator = _.identity) {
     // TIP: There's a very clever way to re-use every() here.
+    return _.reduce(collection, function(wasFound, item) {
+      return wasFound ? wasFound : !!iterator(item)
+    }, false);
   };
 
 
@@ -236,14 +280,15 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
+  _.extend = function(...object) {
+    return Object.assign(...object)
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
-  _.defaults = function(obj) {
-  };
+  _.defaults = function(...object) {
 
+  };
 
   /**
    * FUNCTIONS
